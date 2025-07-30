@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggleButton from "../theme/ThemeToggleButton";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -15,8 +16,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full py-6 flex justify-center border-b border-gray-200 dark:border-gray-800">
-      <ul className="flex gap-8 text-lg font-medium">
+    <nav className="relative w-full py-4 px-6 flex items-center border-b border-gray-200 dark:border-gray-800">
+      <ul className="absolute left-1/2 -translate-x-1/2 flex gap-6 text-base font-medium">
         {navItems.map((item) => (
           <li key={item.href}>
             <Link
@@ -24,7 +25,7 @@ export default function Navbar() {
               className={`transition-colors hover:text-black dark:hover:text-white ${
                 pathname === item.href
                   ? "text-black dark:text-white font-semibold"
-                  : "text-gray-500"
+                  : "text-gray-500 dark:text-gray-400"
               }`}
             >
               {item.label}
@@ -32,6 +33,10 @@ export default function Navbar() {
           </li>
         ))}
       </ul>
+
+      <div className="ml-auto">
+        <ThemeToggleButton />
+      </div>
     </nav>
   );
 }
