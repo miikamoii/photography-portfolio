@@ -26,3 +26,29 @@ body {
   transition-duration: 0.8s;
   transition-timing-function: ease-in-out;
 }
+
+.react-photo-album img {
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.react-photo-album img:hover {
+  transform: scale(1.02);
+  filter: brightness(90%);
+}
+
+@keyframes fadeSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeSlideDown {
+  animation: fadeSlideDown 0.3s ease forwards;
+}
