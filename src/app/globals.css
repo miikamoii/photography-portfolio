@@ -52,3 +52,17 @@ body {
 .animate-fadeSlideDown {
   animation: fadeSlideDown 0.3s ease forwards;
 }
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px #c084fc, 0 0 10px #c084fc, 0 0 15px #c084fc;
+  }
+  50% {
+    box-shadow: 0 0 10px #c084fc, 0 0 20px #c084fc, 0 0 25px #c084fc;
+  }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
