@@ -40,10 +40,11 @@ function TipPopup({ onClose }: { onClose: () => void }) {
         <div className="flex text-sm leading-relaxed text-gray-700 dark:text-gray-300 gap-1 flex-wrap">
           <span className="font-semibold">Gallery tips!</span>
           <span>
-            Click on any photo to open the lightbox viewer!
+            Click on any photo to open it in fullscreen!
             <br />
-            You can also zoom by double-clicking or click the arrows to navigate
-            through the gallery!
+            While fullscreen, doubleclick to zoom.
+            <br />
+            Use the arrow keys to navigate through the photos.
           </span>
         </div>
         <button
