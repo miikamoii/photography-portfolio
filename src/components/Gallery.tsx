@@ -75,6 +75,15 @@ export default function Gallery({ images }: GalleryProps) {
     }
   }, []);
 
+  useEffect(() => {
+    const imgs = document.querySelectorAll(".react-photo-album img");
+    imgs.forEach((img) => {
+      if (!img.getAttribute("loading")) {
+        img.setAttribute("loading", "lazy");
+      }
+    });
+  }, [images]);
+
   function closeTip() {
     setShowTip(false);
     localStorage.setItem("galleryTipClosed", "true");
