@@ -42,4 +42,5 @@ next-env.d.ts
 
 #testing
 /public/gallery/
+/public/compare/
 /public/pfp.png
