@@ -6,7 +6,7 @@ import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { HelpCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/styles.css";
 
@@ -22,45 +22,52 @@ interface GalleryProps {
 
 function TipPopup({ onClose }: { onClose: () => void }) {
   return (
-    <div
-      className="
-        relative
-        bg-white dark:bg-gray-800
-        border border-gray-300 dark:border-gray-700
-        rounded-md p-4 mb-6 max-w-md
-        shadow-lg
-        text-gray-700 dark:text-gray-300
-        animate-fadeSlideDown
-        select-none
-      "
-      role="dialog"
-      aria-live="polite"
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="overflow-hidden"
     >
-      <div className="flex justify-between items-start">
-        <div className="flex text-sm leading-relaxed text-gray-700 dark:text-gray-300 gap-1 flex-wrap">
-          <span className="font-semibold">Gallery tips!</span>
-          <span>
-            Click on any photo to open it in fullscreen!
-            <br />
-            While fullscreen, doubleclick to zoom.
-            <br />
-            Use the arrow keys to navigate through the photos.
-          </span>
+      <div
+        className="
+          relative
+          bg-white dark:bg-gray-800
+          border border-gray-300 dark:border-gray-700
+          rounded-md px-4 py-3 mb-6
+          shadow-lg
+          text-gray-700 dark:text-gray-300
+          select-none
+          w-fit max-w-full
+        "
+        role="dialog"
+        aria-live="polite"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+            <span className="font-semibold block mb-1">Gallery tips!</span>
+            <span className="block">
+              Click any photo to open it in fullscreen!
+              <br />
+              Doubleclick to zoom.
+              <br />
+              Arrow keys to navigate.
+            </span>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close tip"
+            className="
+              text-gray-500 hover:text-gray-700 dark:hover:text-gray-300
+              font-bold text-xl leading-none
+              transition-colors
+            "
+          >
+            &times;
+          </button>
         </div>
-        <button
-          onClick={onClose}
-          aria-label="Close tip"
-          className="
-            ml-4
-            text-gray-500 hover:text-gray-700 dark:hover:text-gray-300
-            font-bold text-xl leading-none
-            transition-colors
-          "
-        >
-          &times;
-        </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -89,18 +96,21 @@ export default function Gallery({ images }: GalleryProps) {
     localStorage.setItem("galleryTipClosed", "true");
   }
 
-  function showTipAgain() {
-    localStorage.removeItem("galleryTipClosed");
-    setShowTip(true);
-  }
-
   return (
     <>
       <div className="mb-4 flex items-center justify-start gap-2">
         <button
-          onClick={showTipAgain}
+          onClick={() => {
+            if (showTip) {
+              setShowTip(false);
+              localStorage.setItem("galleryTipClosed", "true");
+            } else {
+              localStorage.removeItem("galleryTipClosed");
+              setShowTip(true);
+            }
+          }}
           className="p-2 rounded-full bg-gray-50 text-black hover:text-white hover:bg-gray-700 transition dark:bg-gray-800 dark:hover:bg-gray-300 dark:text-white dark:hover:text-gray-900"
-          aria-label="Show tip"
+          aria-label="Toggle tip"
         >
           <motion.div
             key={showTip ? "shown" : "hidden"}
@@ -113,7 +123,9 @@ export default function Gallery({ images }: GalleryProps) {
         </button>
       </div>
 
-      {showTip && <TipPopup onClose={closeTip} />}
+      <AnimatePresence>
+        {showTip && <TipPopup onClose={closeTip} />}
+      </AnimatePresence>
 
       <PhotoAlbum
         layout="masonry"
