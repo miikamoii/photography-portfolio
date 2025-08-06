@@ -26,7 +26,7 @@ export default function Navbar() {
       opacity: 1,
       transition: {
         duration: 0.3,
-        ease: easeInOut, // ✅ use function, not string
+        ease: easeInOut,
         when: "beforeChildren",
         staggerChildren: 0.07,
       },
@@ -36,7 +36,7 @@ export default function Navbar() {
       opacity: 0,
       transition: {
         duration: 0.2,
-        ease: easeInOut, // ✅ again, use function
+        ease: easeInOut,
         staggerChildren: 0.05,
         staggerDirection: -1,
       },
@@ -51,14 +51,11 @@ export default function Navbar() {
 
   return (
     <header className="relative z-50">
-      {/* Sticky Theme Toggle Button */}
       <div className="fixed top-2.5 right-4 z-50">
         <ThemeToggleButton />
       </div>
 
-      {/* Main Navbar */}
       <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
-        {/* Mobile Menu Button */}
         <div className="sm:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -69,7 +66,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Centered Links on Desktop */}
         <ul className="hidden sm:flex gap-6 text-base font-medium mx-auto">
           {navItems.map((item) => (
             <li key={item.href}>
@@ -88,7 +84,6 @@ export default function Navbar() {
         </ul>
       </nav>
 
-      {/* Mobile Menu with Framer Motion */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
