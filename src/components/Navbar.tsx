@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { FiMenu, FiX } from "react-icons/fi";
 import ThemeToggleButton from "../theme/ThemeToggleButton";
 import { motion, AnimatePresence, Variants, easeInOut } from "framer-motion";
 
@@ -11,7 +11,7 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Blog", href: "/blog" },
+  { label: "Now", href: "/now" },
   { label: "About", href: "/about" },
 ];
 
@@ -62,7 +62,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             className="text-gray-700 dark:text-gray-300"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
         </div>
 
