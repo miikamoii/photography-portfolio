@@ -1,31 +1,16 @@
 // app/gallery/page.tsx
-import fs from "fs";
-import path from "path";
-import sizeOf from "image-size";
+import { getGalleryImages } from "@/lib/getGalleryImages";
 import Gallery from "@/components/Gallery";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export const dynamic = "force-dynamic";
 
 export default function GalleryPage() {
-  const galleryDir = path.join(process.cwd(), "public/gallery");
-  const files = fs.readdirSync(galleryDir);
-
-  const images = files
-    .filter((file) => /\.(jpe?g|png|webp|gif|avif)$/i.test(file))
-    .map((file) => {
-      const filePath = path.join(galleryDir, file);
-      const dimensions = sizeOf(fs.readFileSync(filePath));
-
-      return {
-        src: `/gallery/${file}`,
-        width: dimensions.width || 1,
-        height: dimensions.height || 1,
-      };
-    });
+  const images = getGalleryImages();
 
   return (
-    <main className="min-h-screen px-6 py-12 space-y-20">
+    <main className="min-h-screen px-6 py-12 space-y-20 relative">
       <section>
         <h1 className="text-4xl font-extrabold mb-4 text-center">My Gallery</h1>
         <p className="text-lg text-gray-600 mb-8 text-center max-w-2xl mx-auto">
@@ -64,6 +49,8 @@ export default function GalleryPage() {
           />
         </div>
       </section>
+
+      <ScrollToTopButton />
     </main>
   );
 }
