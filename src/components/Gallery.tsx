@@ -5,7 +5,7 @@ import PhotoAlbum from "react-photo-album";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import { HelpCircle } from "lucide-react";
+import { FiHelpCircle } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/styles.css";
@@ -118,7 +118,7 @@ export default function Gallery({ images }: GalleryProps) {
             animate={{ opacity: 1, rotate: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <HelpCircle className="h-5 w-5" />
+            <FiHelpCircle className="h-5 w-5" />
           </motion.div>
         </button>
       </div>

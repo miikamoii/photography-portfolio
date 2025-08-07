@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { FiMoon, FiSun } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 export default function ThemeToggle() {
@@ -29,9 +29,9 @@ export default function ThemeToggle() {
         transition={{ duration: 0.3 }}
       >
         {theme === "dark" ? (
-          <Sun className="h-5 w-5" />
+          <FiSun className="h-5 w-5" />
         ) : (
-          <Moon className="h-5 w-5" />
+          <FiMoon className="h-5 w-5" />
         )}
       </motion.div>
     </button>
