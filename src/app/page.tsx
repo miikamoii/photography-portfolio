@@ -9,6 +9,9 @@ export default function Home() {
   const waveControls = useAnimation();
   const [isWaving, setIsWaving] = useState(false);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [showAnnotation, setShowAnnotation] = useState(false);
+  const [annotationVisible, setAnnotationVisible] = useState(false);
+  const [annotationFullyAppeared, setAnnotationFullyAppeared] = useState(false);
 
   const triggerWave = () => {
     if (isWaving) return;
@@ -36,6 +39,13 @@ export default function Home() {
   useEffect(() => {
     if (pageLoaded) {
       triggerWave();
+
+      const timeout = setTimeout(() => {
+        setShowAnnotation(true);
+        setAnnotationVisible(true);
+      }, 800);
+
+      return () => clearTimeout(timeout);
     }
   }, [pageLoaded]);
 
@@ -53,7 +63,7 @@ export default function Home() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-20 min-h-screen">
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight relative">
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight relative inline-block">
           <motion.span
             className="inline-block origin-[70%_70%] mr-2"
             animate={waveControls}
@@ -64,7 +74,10 @@ export default function Home() {
           Hi, I’m{" "}
           <motion.span
             className="text-purple-400 relative cursor-default inline-block"
-            onMouseEnter={() => setHovered(true)}
+            onMouseEnter={() => {
+              setHovered(true);
+              if (annotationFullyAppeared) setAnnotationVisible(false);
+            }}
             onMouseLeave={() => setHovered(false)}
             initial={{ y: -150, opacity: 0 }}
             animate={pageLoaded ? { y: 0, opacity: 1 } : {}}
@@ -77,6 +90,28 @@ export default function Home() {
             }}
           >
             Miika
+            <AnimatePresence>
+              {showAnnotation && annotationVisible && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10, y: 10 }}
+                  animate={{ opacity: 1, x: 0, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: 3, duration: 1, ease: "easeOut" }}
+                  onAnimationComplete={() => setAnnotationFullyAppeared(true)}
+                  className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center gap-1 select-none pointer-events-none"
+                  aria-hidden="true"
+                >
+                  <span
+                    className="text-sm text-purple-300"
+                    style={{
+                      transform: "rotate(35deg)",
+                    }}
+                  >
+                    Hover over me!
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <AnimatePresence>
               {hovered && (
                 <motion.div
