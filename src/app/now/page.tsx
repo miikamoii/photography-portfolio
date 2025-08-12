@@ -29,7 +29,7 @@ export default function NowPage() {
       <div className="space-y-6 leading-relaxed">
         <div>
           <h2 className="text-xl font-semibold mb-1">👨‍💻 Coding Focus</h2>
-          <ul className="text-gray-400 list-disc list-inside space-y-1">
+          <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>
               Building out portfolio features (auth, tagging, lightbox, etc.)
             </li>
@@ -40,7 +40,7 @@ export default function NowPage() {
 
         <div>
           <h2 className="text-xl font-semibold mb-1">📚 Currently Learning</h2>
-          <ul className="text-gray-400 list-disc list-inside space-y-1">
+          <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Next.js 14 full-stack features</li>
             <li>Design patterns & testing best practices</li>
             <li>Authentication and secure API design</li>
@@ -49,7 +49,7 @@ export default function NowPage() {
 
         <div>
           <h2 className="text-xl font-semibold mb-1">📸 Photography</h2>
-          <ul className="text-gray-400 list-disc list-inside space-y-1">
+          <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Going through the pictures of my last trip to Japan</li>
             <li>Exploring auto-tagging + AI sorting tools</li>
           </ul>
@@ -57,7 +57,7 @@ export default function NowPage() {
 
         <div>
           <h2 className="text-xl font-semibold mb-1">💪 Personal Goals</h2>
-          <ul className=" text-gray-400 list-disc list-inside space-y-1">
+          <ul className=" text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Polishing this portfolio for developer job applications</li>
             <li>Staying consistent with daily focused learning</li>
             <li>Finding inspiration through building, not just consuming</li>
@@ -65,9 +65,7 @@ export default function NowPage() {
         </div>
       </div>
 
-      <p className="text-sm mt-10 text-gray-500 dark:text-gray-400">
-        Last updated: August 2025
-      </p>
+      <p className="text-sm mt-10 text-gray-500">Last updated: August 2025</p>
     </section>
   );
 }
