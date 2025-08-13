@@ -6,6 +6,12 @@ import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import ThemeToggleButton from "../theme/ThemeToggleButton";
 import { motion, easeInOut } from "framer-motion";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
+
+interface NavbarProps {
+  session: Session | null;
+}
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -15,7 +21,7 @@ const navItems = [
   { label: "About", href: "/about" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ session }: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -26,7 +32,7 @@ export default function Navbar() {
       transition: {
         duration: 0.3,
         ease: easeInOut,
-        when: "beforeChildren" as const,
+        when: "beforeChildren",
         staggerChildren: 0.07,
       },
     },
@@ -36,7 +42,7 @@ export default function Navbar() {
       transition: {
         duration: 0.2,
         ease: easeInOut,
-        when: "afterChildren" as const,
+        when: "afterChildren",
         staggerChildren: 0.05,
         staggerDirection: -1,
       },
@@ -54,16 +60,12 @@ export default function Navbar() {
         <ThemeToggleButton />
       </div>
 
-      <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
-        <div className="sm:hidden">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            className="text-gray-700 dark:text-gray-300"
-          >
-            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-        </div>
+      <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 relative">
+        {session && (
+          <span className="hidden sm:block absolute left-6 text-gray-600 dark:text-gray-300 text-sm">
+            {session.user?.name}
+          </span>
+        )}
 
         <ul className="hidden sm:flex gap-6 text-base font-medium mx-auto">
           {navItems.map((item) => (
@@ -80,7 +82,43 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+
+          {session ? (
+            <li>
+              <button
+                onClick={() => signOut({ callbackUrl: window.location.href })}
+                className="text-red-600 dark:text-red-400 font-semibold transition-colors hover:text-red-800 dark:hover:text-red-500 cursor-pointer"
+              >
+                Logout
+              </button>
+            </li>
+          ) : (
+            <li>
+              <Link
+                href="/login"
+                className="text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
+              >
+                Login
+              </Link>
+            </li>
+          )}
         </ul>
+
+        <div className="flex sm:hidden items-center space-x-2">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            className="text-gray-700 dark:text-gray-300"
+          >
+            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+
+          {session && (
+            <span className="text-gray-600 dark:text-gray-300 text-sm ml-2">
+              {session.user?.name}
+            </span>
+          )}
+        </div>
       </nav>
 
       <motion.div
@@ -109,6 +147,31 @@ export default function Navbar() {
             </Link>
           </motion.div>
         ))}
+
+        <motion.div
+          variants={linkVariants}
+          className="w-full flex justify-center"
+        >
+          {session ? (
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                signOut({ callbackUrl: window.location.href });
+              }}
+              className="block py-2 text-red-600 dark:text-red-400 font-semibold transition-colors hover:text-red-800 dark:hover:text-red-500 cursor-pointer"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="block py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Login
+            </Link>
+          )}
+        </motion.div>
       </motion.div>
     </header>
   );
