@@ -3,11 +3,14 @@ import { getGalleryImages } from "@/lib/getGalleryImages";
 import Gallery from "@/components/Gallery";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
   const images = getGalleryImages();
+  const session = await getServerSession(authOptions);
 
   return (
     <main className="min-h-screen px-6 py-12 space-y-20 relative">
@@ -40,14 +43,20 @@ export default function GalleryPage() {
           <BeforeAfterSlider
             beforeSrc="/compare/before1.jpg"
             afterSrc="/compare/after1.jpg"
+            session={session}
+            locked
           />
           <BeforeAfterSlider
             beforeSrc="/compare/before2.jpg"
             afterSrc="/compare/after2.jpg"
+            session={session}
+            locked
           />
           <BeforeAfterSlider
             beforeSrc="/compare/before3.jpg"
             afterSrc="/compare/after3.jpg"
+            session={session}
+            locked
           />
         </div>
       </section>

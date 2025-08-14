@@ -1,25 +1,32 @@
 // components/BeforeAfterSlider.tsx
 "use client";
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useState as useReactState,
-} from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { Session } from "next-auth";
+import { usePathname, useRouter } from "next/navigation";
+
+/* eslint-disable @next/next/no-img-element */
 
 interface BeforeAfterSliderProps {
   beforeSrc: string;
   afterSrc: string;
+  session?: Session | null;
+  locked?: boolean;
 }
 
 export default function BeforeAfterSlider({
   beforeSrc,
   afterSrc,
+  session,
+  locked = false,
 }: BeforeAfterSliderProps) {
   const [sliderPos, setSliderPos] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [aspectRatio, setAspectRatio] = useReactState<number | null>(null);
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+
+  const pathname = usePathname();
+  const router = useRouter();
+  const isLocked = locked && !session;
 
   useEffect(() => {
     const img = new Image();
@@ -38,13 +45,19 @@ export default function BeforeAfterSlider({
   };
 
   const onMouseMove = (e: React.MouseEvent) => {
-    if (e.buttons !== 1) return;
+    if (e.buttons !== 1 || isLocked) return;
     onMove(e.clientX);
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
+    if (isLocked) return;
     onMove(e.touches[0].clientX);
   };
+
+  function handleLoginClick() {
+    sessionStorage.setItem("lastVisited", pathname);
+    router.push("/login");
+  }
 
   return (
     <div
@@ -60,37 +73,51 @@ export default function BeforeAfterSlider({
       onMouseMove={onMouseMove}
       onTouchMove={onTouchMove}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {isLocked && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm z-20 text-white font-semibold text-lg text-center px-4">
+          Log in as a guest user to try this tool
+          <button
+            onClick={handleLoginClick}
+            className="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
+          >
+            Login / Register
+          </button>
+        </div>
+      )}
+
       <img
         src={afterSrc}
-        alt="Before"
+        alt="After"
         className="absolute top-0 left-0 w-full h-full object-contain"
         draggable={false}
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+
       <img
         src={beforeSrc}
-        alt="After"
+        alt="Before"
         className="absolute top-0 left-0 w-full h-full object-contain"
         draggable={false}
         style={{
           clipPath: `inset(0 ${100 - sliderPos}% 0 0)`,
         }}
       />
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: `${sliderPos}%`,
-          transform: "translateX(-50%)",
-          height: "100%",
-          width: "4px",
-          backgroundColor: "white",
-          cursor: "ew-resize",
-          zIndex: 10,
-          boxShadow: "0 0 5px rgba(0,0,0,0.5)",
-        }}
-      />
+
+      {!isLocked && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: `${sliderPos}%`,
+            transform: "translateX(-50%)",
+            height: "100%",
+            width: "4px",
+            backgroundColor: "white",
+            cursor: "ew-resize",
+            zIndex: 10,
+            boxShadow: "0 0 5px rgba(0,0,0,0.5)",
+          }}
+        />
+      )}
     </div>
   );
 }
