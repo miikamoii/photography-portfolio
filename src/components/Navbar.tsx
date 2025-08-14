@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import ThemeToggleButton from "../theme/ThemeToggleButton";
 import { motion, easeInOut } from "framer-motion";
@@ -23,6 +23,7 @@ const navItems = [
 
 export default function Navbar({ session }: NavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const containerVariants = {
@@ -53,6 +54,11 @@ export default function Navbar({ session }: NavbarProps) {
     open: { opacity: 1, y: 0, transition: { duration: 0.3 } },
     closed: { opacity: 0, y: -10, transition: { duration: 0.2 } },
   };
+
+  function handleLoginClick() {
+    sessionStorage.setItem("lastVisited", pathname);
+    router.push("/login");
+  }
 
   return (
     <header className="relative z-50">
@@ -94,12 +100,12 @@ export default function Navbar({ session }: NavbarProps) {
             </li>
           ) : (
             <li>
-              <Link
-                href="/login"
-                className="text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
+              <button
+                onClick={handleLoginClick}
+                className="text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500 cursor-pointer"
               >
                 Login
-              </Link>
+              </button>
             </li>
           )}
         </ul>
@@ -163,13 +169,15 @@ export default function Navbar({ session }: NavbarProps) {
               Logout
             </button>
           ) : (
-            <Link
-              href="/login"
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                handleLoginClick();
+              }}
               className="block py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
-              onClick={() => setIsMenuOpen(false)}
             >
               Login
-            </Link>
+            </button>
           )}
         </motion.div>
       </motion.div>

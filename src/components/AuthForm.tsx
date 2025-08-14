@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export default function AuthForm() {
@@ -10,6 +10,12 @@ export default function AuthForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [fading, setFading] = useState(false);
+  const [callbackUrl, setCallbackUrl] = useState("/");
+
+  useEffect(() => {
+    const lastVisited = sessionStorage.getItem("lastVisited");
+    if (lastVisited) setCallbackUrl(lastVisited);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,13 +25,12 @@ export default function AuthForm() {
       username,
       password,
       mode,
-      redirect: false,
+      redirect: true,
+      callbackUrl,
     });
 
     if (res?.error) {
       setError(res.error);
-    } else {
-      window.location.href = "/";
     }
   }
 
