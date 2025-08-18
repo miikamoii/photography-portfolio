@@ -1,8 +1,16 @@
+// src\components\AuthForm.tsx
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
+type SignInResponse = {
+  ok: boolean;
+  error?: string;
+  status?: number;
+  url?: string;
+};
 
 export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -11,6 +19,7 @@ export default function AuthForm() {
   const [error, setError] = useState("");
   const [fading, setFading] = useState(false);
   const [callbackUrl, setCallbackUrl] = useState("/");
+  const [popup, setPopup] = useState("");
 
   useEffect(() => {
     const lastVisited = sessionStorage.getItem("lastVisited");
@@ -20,17 +29,31 @@ export default function AuthForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setPopup("");
 
-    const res = await signIn("credentials", {
+    const res = (await signIn("credentials", {
       username,
       password,
       mode,
-      redirect: true,
+      redirect: false,
       callbackUrl,
-    });
+    })) as SignInResponse;
 
     if (res?.error) {
       setError(res.error);
+      return;
+    }
+
+    if (res?.ok) {
+      const session = await getSession();
+      if (session?.removedOldest) {
+        setPopup("Maximum guests exceeded — oldest guest removed!");
+        setTimeout(() => {
+          window.location.href = callbackUrl;
+        }, 1800);
+      } else {
+        window.location.href = callbackUrl;
+      }
     }
   }
 
@@ -93,6 +116,18 @@ export default function AuthForm() {
 
         {error && (
           <p className="text-red-500 mb-5 font-semibold text-center">{error}</p>
+        )}
+
+        {popup && (
+          <motion.p
+            key={popup}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-yellow-500 mb-5 font-semibold text-center"
+          >
+            {popup}
+          </motion.p>
         )}
 
         <button
