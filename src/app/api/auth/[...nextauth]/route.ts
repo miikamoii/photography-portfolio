@@ -1,11 +1,21 @@
+// src\app\api\auth\[...nextauth]\route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {
-  addGuest,
-  validateGuest,
-  guestStorage,
-  MAX_GUESTS,
-} from "@/lib/guestStorage";
+import { addGuest, validateGuest } from "@/lib/guestStorage";
+
+declare module "next-auth" {
+  interface Session {
+    removedOldest?: boolean;
+  }
+  interface User {
+    removedOldest?: boolean;
+  }
+}
+declare module "next-auth/jwt" {
+  interface JWT {
+    removedOldest?: boolean;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,11 +31,16 @@ export const authOptions: NextAuthOptions = {
 
         try {
           if (credentials.mode === "register") {
-            if (guestStorage.size >= MAX_GUESTS) {
-              throw new Error("Maximum number of guest users reached");
-            }
-            await addGuest(credentials.username, credentials.password);
-            return { id: credentials.username, name: credentials.username };
+            const removedOldest = await addGuest(
+              credentials.username,
+              credentials.password
+            );
+
+            return {
+              id: credentials.username,
+              name: credentials.username,
+              removedOldest,
+            };
           }
 
           if (credentials.mode === "login") {
@@ -47,8 +62,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: { strategy: "jwt" },
-  pages: {
-    signIn: "/login",
+  pages: { signIn: "/login" },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.removedOldest = user.removedOldest ?? false;
+      return token;
+    },
+    async session({ session, token }) {
+      session.removedOldest = token.removedOldest ?? false;
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
