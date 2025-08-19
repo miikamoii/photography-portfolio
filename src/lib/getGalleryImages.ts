@@ -10,7 +10,7 @@ export interface ImageItem {
 }
 
 export function getGalleryImages(): ImageItem[] {
-  const galleryDir = path.join(process.cwd(), "public/gallery");
+  const galleryDir = path.join(process.cwd(), "public/optimized/gallery");
   const files = fs.readdirSync(galleryDir).sort();
 
   return files
@@ -20,7 +20,7 @@ export function getGalleryImages(): ImageItem[] {
       const dimensions = sizeOf(fs.readFileSync(filePath));
 
       return {
-        src: `/gallery/${file}`,
+        src: `/optimized/gallery/${file}`,
         width: dimensions.width || 1,
         height: dimensions.height || 1,
       };

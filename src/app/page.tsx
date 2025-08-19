@@ -53,7 +53,7 @@ export default function Home() {
     <main className="relative min-h-screen w-full overflow-hidden text-white">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/IMG_1217.jpg"
+          src="/optimized/hero/IMG_1217.webp"
           alt="Hero background"
           fill
           priority
@@ -123,7 +123,7 @@ export default function Home() {
                 >
                   <div className="w-24 h-24 rounded-full overflow-hidden border-[1px] border-purple-400 shadow-lg animate-glow">
                     <Image
-                      src="/pfp.png"
+                      src="/optimized/pfp/pfp.png"
                       alt="Miika"
                       width={200}
                       height={200}

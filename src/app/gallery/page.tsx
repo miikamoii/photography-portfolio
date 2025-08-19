@@ -41,20 +41,20 @@ export default async function GalleryPage() {
 
         <div className="space-y-12">
           <BeforeAfterSlider
-            beforeSrc="/compare/before1.jpg"
-            afterSrc="/compare/after1.jpg"
+            beforeSrc="/optimized/compare/before1.webp"
+            afterSrc="/optimized/compare/after1.webp"
             session={session}
             locked
           />
           <BeforeAfterSlider
-            beforeSrc="/compare/before2.jpg"
-            afterSrc="/compare/after2.jpg"
+            beforeSrc="/optimized/compare/before2.webp"
+            afterSrc="/optimized/compare/after2.webp"
             session={session}
             locked
           />
           <BeforeAfterSlider
-            beforeSrc="/compare/before3.jpg"
-            afterSrc="/compare/after3.jpg"
+            beforeSrc="/optimized/compare/before3.webp"
+            afterSrc="/optimized/compare/after3.webp"
             session={session}
             locked
           />
