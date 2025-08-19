@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PhotoAlbum from "react-photo-album";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { FullscreenRef } from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { FiHelpCircle } from "react-icons/fi";
@@ -74,12 +74,13 @@ function TipPopup({ onClose }: { onClose: () => void }) {
 export default function Gallery({ images }: GalleryProps) {
   const [index, setIndex] = useState<number | null>(null);
   const [showTip, setShowTip] = useState(false);
+  const fullscreenRef = useRef<FullscreenRef | null>(null);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
   useEffect(() => {
     const tipClosed = localStorage.getItem("galleryTipClosed");
-    if (!tipClosed) {
-      setShowTip(true);
-    }
+    if (!tipClosed) setShowTip(true);
   }, []);
 
   useEffect(() => {
@@ -95,6 +96,24 @@ export default function Gallery({ images }: GalleryProps) {
     setShowTip(false);
     localStorage.setItem("galleryTipClosed", "true");
   }
+
+  useEffect(() => {
+    if (index !== null && isMobile) {
+      fullscreenRef.current?.enter();
+      window.history.pushState({ lightbox: true }, "");
+    }
+  }, [index, isMobile]);
+
+  useEffect(() => {
+    function handlePopState() {
+      if (index !== null) {
+        setIndex(null);
+        fullscreenRef.current?.exit();
+      }
+    }
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [index]);
 
   return (
     <>
@@ -131,8 +150,8 @@ export default function Gallery({ images }: GalleryProps) {
         layout="masonry"
         photos={images}
         columns={(containerWidth) => {
-          if (containerWidth < 640) return 1;
-          if (containerWidth < 768) return 2;
+          if (containerWidth < 280) return 1;
+          if (containerWidth < 680) return 2;
           return 3;
         }}
         spacing={8}
@@ -145,6 +164,15 @@ export default function Gallery({ images }: GalleryProps) {
         close={() => setIndex(null)}
         slides={images.map(({ src }) => ({ src }))}
         plugins={[Fullscreen, Zoom]}
+        fullscreen={{ ref: fullscreenRef, auto: false }}
+        styles={
+          isMobile
+            ? {
+                container: { backgroundColor: "black" },
+                button: { display: "none" },
+              }
+            : {}
+        }
       />
     </>
   );
