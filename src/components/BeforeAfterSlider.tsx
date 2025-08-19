@@ -67,13 +67,13 @@ export default function BeforeAfterSlider({
       className="relative w-full max-w-3xl mx-auto my-8"
       style={{
         userSelect: "none",
-        touchAction: "none",
+        touchAction: isLocked ? "auto" : "none",
         aspectRatio: aspectRatio ?? "16 / 9",
         position: "relative",
       }}
       onMouseDown={(e) => e.preventDefault()}
       onMouseMove={onMouseMove}
-      onTouchMove={onTouchMove}
+      onTouchMove={isLocked ? undefined : onTouchMove}
     >
       {isLocked && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm z-20 text-white font-semibold text-lg text-center px-4">
