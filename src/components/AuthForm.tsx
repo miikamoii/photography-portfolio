@@ -1,4 +1,3 @@
-// src\components\AuthForm.tsx
 "use client";
 
 import { signIn, getSession } from "next-auth/react";
@@ -46,7 +45,7 @@ export default function AuthForm() {
 
     if (res?.ok) {
       const session = await getSession();
-      if (session?.removedOldest) {
+      if (session?.user?.removedOldest) {
         setPopup("Maximum guests exceeded — oldest guest removed!");
         setTimeout(() => {
           window.location.href = callbackUrl;
@@ -64,10 +63,10 @@ export default function AuthForm() {
     const fadeOutMs = 180;
     const totalMs = 360;
 
-    setTimeout(() => {
-      setMode((m) => (m === "login" ? "register" : "login"));
-    }, fadeOutMs);
-
+    setTimeout(
+      () => setMode((m) => (m === "login" ? "register" : "login")),
+      fadeOutMs
+    );
     setTimeout(() => setFading(false), totalMs);
   }
 
@@ -78,13 +77,13 @@ export default function AuthForm() {
       animate={{ opacity: fading ? 0 : 1 }}
       transition={{ duration: 0.18, ease: "easeInOut" }}
       className="
-        bg-gray-50 dark:bg-gray-800 
+        bg-gray-50 dark:bg-gray-800
         border border-gray-200 dark:border-gray-700
-        shadow-lg 
-        rounded-xl 
-        p-8 
-        max-w-md 
-        w-full 
+        shadow-lg
+        rounded-xl
+        p-8
+        max-w-md
+        w-full
         transition-colors duration-300
       "
       style={{ willChange: "opacity" }}
