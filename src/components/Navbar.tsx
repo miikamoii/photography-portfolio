@@ -68,7 +68,7 @@ export default function Navbar({ session }: NavbarProps) {
         <ThemeToggleButton />
       </div>
 
-      <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 relative">
+      <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-purple-300 dark:border-purple-800 relative">
         {isLoggedIn && (
           <span className="hidden sm:block absolute left-6 text-gray-600 dark:text-gray-300 text-sm">
             {session?.user?.name}

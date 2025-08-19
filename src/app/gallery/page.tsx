@@ -26,7 +26,7 @@ export default async function GalleryPage() {
         <Gallery images={images} />
       </section>
 
-      <div className="border-t border-gray-200 dark:border-gray-800 my-20" />
+      <div className="border-t border-purple-300 dark:border-purple-800  my-20" />
 
       <section className="py-12 px-4 transition-colors duration-300">
         <div className="max-w-3xl mx-auto text-center mb-12">
