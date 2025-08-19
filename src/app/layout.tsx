@@ -7,6 +7,8 @@ import ThemeProvider from "@/theme/ThemeProvider";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 
+import { Analytics } from "@vercel/analytics/next";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -39,6 +41,7 @@ export default async function RootLayout({
           <main className="px-4 sm:px-8 max-w-5xl mx-auto">{children}</main>
           <Footer />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
