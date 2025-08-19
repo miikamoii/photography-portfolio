@@ -4,7 +4,7 @@ import Gallery from "@/components/Gallery";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export const dynamic = "force-dynamic";
 
