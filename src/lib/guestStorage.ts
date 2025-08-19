@@ -9,7 +9,7 @@ type GuestUser = {
 };
 
 const guestStorage = new Map<string, GuestUser>();
-export const MAX_GUESTS = 10;
+export const MAX_GUESTS = 5;
 export const EXPIRATION_MS = 60 * 60 * 1000; // 1 hour
 
 export async function addGuest(username: string, password: string) {
@@ -46,6 +46,11 @@ export async function validateGuest(username: string, password: string) {
     return { username: user.username };
   }
   return false;
+}
+
+export function getGuestByUsername(username: string) {
+  cleanupExpiredGuests();
+  return guestStorage.get(username) || null;
 }
 
 function cleanupExpiredGuests() {

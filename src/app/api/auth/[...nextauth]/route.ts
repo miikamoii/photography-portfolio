@@ -1,11 +1,16 @@
 // src\app\api\auth\[...nextauth]\route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { addGuest, validateGuest } from "@/lib/guestStorage";
+import {
+  addGuest,
+  validateGuest,
+  getGuestByUsername,
+} from "@/lib/guestStorage";
 
 declare module "next-auth" {
   interface Session {
     removedOldest?: boolean;
+    user?: { name?: string | null } | null;
   }
   interface User {
     removedOldest?: boolean;
@@ -14,6 +19,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     removedOldest?: boolean;
+    username?: string;
   }
 }
 
@@ -65,11 +71,28 @@ export const authOptions: NextAuthOptions = {
   pages: { signIn: "/login" },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.removedOldest = user.removedOldest ?? false;
+      if (user) {
+        token.username = user.name ?? undefined;
+        token.removedOldest = user.removedOldest ?? false;
+      }
+
+      if (token.username) {
+        const guest = getGuestByUsername(token.username);
+        if (!guest) {
+          return {};
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
-      session.removedOldest = token.removedOldest ?? false;
+      if (token?.username) {
+        session.user = { name: token.username };
+        session.removedOldest = token.removedOldest ?? false;
+      } else {
+        session.user = null;
+        session.removedOldest = false;
+      }
       return session;
     },
   },

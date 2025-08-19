@@ -26,7 +26,9 @@ export default function BeforeAfterSlider({
 
   const pathname = usePathname();
   const router = useRouter();
-  const isLocked = locked && !session;
+
+  const isLoggedIn = !!session?.user?.name;
+  const isLocked = locked && !isLoggedIn;
 
   useEffect(() => {
     const img = new Image();
@@ -78,7 +80,7 @@ export default function BeforeAfterSlider({
           Log in as a guest user to try this tool
           <button
             onClick={handleLoginClick}
-            className="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
+            className="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md cursor-pointer"
           >
             Login / Register
           </button>

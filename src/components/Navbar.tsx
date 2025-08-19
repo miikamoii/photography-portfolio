@@ -60,6 +60,8 @@ export default function Navbar({ session }: NavbarProps) {
     router.push("/login");
   }
 
+  const isLoggedIn = !!session?.user?.name;
+
   return (
     <header className="relative z-50">
       <div className="fixed top-2.5 right-4 z-50">
@@ -67,9 +69,9 @@ export default function Navbar({ session }: NavbarProps) {
       </div>
 
       <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 relative">
-        {session && (
+        {isLoggedIn && (
           <span className="hidden sm:block absolute left-6 text-gray-600 dark:text-gray-300 text-sm">
-            {session.user?.name}
+            {session?.user?.name}
           </span>
         )}
 
@@ -89,7 +91,7 @@ export default function Navbar({ session }: NavbarProps) {
             </li>
           ))}
 
-          {session ? (
+          {isLoggedIn ? (
             <li>
               <button
                 onClick={() => signOut({ callbackUrl: window.location.href })}
@@ -119,9 +121,9 @@ export default function Navbar({ session }: NavbarProps) {
             {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
 
-          {session && (
+          {isLoggedIn && (
             <span className="text-gray-600 dark:text-gray-300 text-sm ml-2">
-              {session.user?.name}
+              {session?.user?.name}
             </span>
           )}
         </div>
@@ -158,7 +160,7 @@ export default function Navbar({ session }: NavbarProps) {
           variants={linkVariants}
           className="w-full flex justify-center"
         >
-          {session ? (
+          {isLoggedIn ? (
             <button
               onClick={() => {
                 setIsMenuOpen(false);
@@ -174,7 +176,7 @@ export default function Navbar({ session }: NavbarProps) {
                 setIsMenuOpen(false);
                 handleLoginClick();
               }}
-              className="block py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
+              className="block py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-300 cursor-pointer"
             >
               Login
             </button>
