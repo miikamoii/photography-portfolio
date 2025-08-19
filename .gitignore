@@ -44,3 +44,5 @@ next-env.d.ts
 # image optimization
 optimize-images.mjs
 /public/images/
+
+.vercel
