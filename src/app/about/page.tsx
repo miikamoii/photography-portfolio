@@ -41,7 +41,7 @@ export default function AboutPage() {
         <p className="text-gray-600 dark:text-gray-400">
           Technologies I work with include React, Next.js, TypeScript, Tailwind
           CSS, and Framer Motion, among others. Photography inspires my design
-          sensibility and a very high attention to detail.
+          sensibility and a high attention to detail.
         </p>
       </section>
     </main>

@@ -71,7 +71,7 @@ export default function Home() {
           >
             👋
           </motion.span>
-          Hi, I’m{" "}
+          Hi, I&#39;m{" "}
           <motion.span
             className="text-purple-400 relative cursor-default inline-block"
             onMouseEnter={() => {
@@ -149,10 +149,10 @@ export default function Home() {
             View Photography
           </a>
           <a
-            href="/blog"
+            href="/now"
             className="border border-white text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-white hover:text-black transition"
           >
-            Read the Blog
+            What I&#39;m doing now
           </a>
         </div>
       </div>
