@@ -43,6 +43,5 @@ next-env.d.ts
 
 # image optimization
 optimize-images.mjs
+generate-gallery-placeholder.mjs
 /public/images/
-
-.vercel
