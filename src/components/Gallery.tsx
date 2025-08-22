@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import MasonryPhotoAlbum, { type RenderPhotoProps } from "react-photo-album";
 import Lightbox from "yet-another-react-lightbox";
@@ -16,8 +16,85 @@ interface GalleryProps {
   images: ImageItem[];
 }
 
+interface ProgressiveImageProps {
+  photo: ImageItem;
+  width: number;
+  height: number;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+function ProgressiveImage({
+  photo,
+  width,
+  height,
+  onClick,
+}: ProgressiveImageProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div
+      className="progressive-image"
+      style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: `${width} / ${height}`,
+        cursor: "pointer",
+        borderRadius: "0.25rem",
+        overflow: "hidden",
+      }}
+      onClick={onClick}
+    >
+      {/* Blur placeholder */}
+      <Image
+        fill
+        src={photo.blurDataURL || photo.src}
+        alt={photo.alt || ""}
+        style={{
+          objectFit: "cover",
+          transition: "opacity 0.5s ease-out",
+          opacity: loaded ? 0 : 1,
+          position: "absolute",
+        }}
+      />
+
+      {/* Full resolution image */}
+      <Image
+        fill
+        src={photo.src}
+        alt={photo.alt || ""}
+        sizes="(max-width: 680px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        style={{
+          objectFit: "cover",
+          transition: "opacity 0.5s ease-in",
+          opacity: loaded ? 1 : 0,
+        }}
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+}
+
 export default function Gallery({ images }: GalleryProps) {
   const [index, setIndex] = useState<number | null>(null);
+
+  // Handle mobile back button
+  useEffect(() => {
+    const handlePopState = () => {
+      if (index !== null) {
+        setIndex(null); // close lightbox
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    if (index !== null) {
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [index]);
 
   const renderPhoto = (
     { onClick }: RenderPhotoProps,
@@ -27,23 +104,13 @@ export default function Gallery({ images }: GalleryProps) {
       height,
     }: { photo: ImageItem; width: number; height: number }
   ) => (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: `${width} / ${height}`,
-        cursor: "pointer",
-      }}
+    <ProgressiveImage
+      key={photo.src}
+      photo={photo}
+      width={width}
+      height={height}
       onClick={onClick}
-    >
-      <Image
-        fill
-        src={photo.src}
-        alt={photo.alt || ""}
-        sizes="(max-width: 680px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        style={{ objectFit: "cover" }}
-      />
-    </div>
+    />
   );
 
   const renderLightboxImage = ({ slide }: { slide: Slide }) => (
