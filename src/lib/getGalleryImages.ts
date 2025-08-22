@@ -1,28 +1,25 @@
-// lib/getGalleryImages.ts
 import fs from "fs";
 import path from "path";
-import sizeOf from "image-size";
+import type { Photo } from "react-photo-album";
 
-export interface ImageItem {
+export interface ImageItem extends Photo {
   src: string;
   width: number;
   height: number;
+  alt?: string;
+  blurDataURL?: string;
 }
 
+const CACHE_FILE = path.join(
+  process.cwd(),
+  "public",
+  "optimized",
+  "gallery",
+  "gallery-data.json"
+);
+
 export function getGalleryImages(): ImageItem[] {
-  const galleryDir = path.join(process.cwd(), "public/optimized/gallery");
-  const files = fs.readdirSync(galleryDir).sort();
-
-  return files
-    .filter((file) => /\.(jpe?g|png|webp|gif|avif)$/i.test(file))
-    .map((file) => {
-      const filePath = path.join(galleryDir, file);
-      const dimensions = sizeOf(fs.readFileSync(filePath));
-
-      return {
-        src: `/optimized/gallery/${file}`,
-        width: dimensions.width || 1,
-        height: dimensions.height || 1,
-      };
-    });
+  if (!fs.existsSync(CACHE_FILE)) return [];
+  const data = fs.readFileSync(CACHE_FILE, "utf-8");
+  return JSON.parse(data) as ImageItem[];
 }

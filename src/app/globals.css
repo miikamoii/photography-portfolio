@@ -43,15 +43,24 @@ html.ready {
   transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
 }
 
-.react-photo-album img {
+.react-photo-album .progressive-image {
   border-radius: 0.5rem;
-  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
+  filter: brightness(100%);
 }
 
-.react-photo-album img:hover {
-  transform: scale(1.02);
+.react-photo-album .progressive-image:hover {
+  transform: scale(1.05);
+  filter: brightness(105%);
+  box-shadow: 0 4px 15px rgba(159, 62, 255, 0.8),
+    0 0 30px rgba(192, 132, 252, 0.5), 0 0 50px rgba(159, 62, 255, 0.3);
+}
+
+html.dark .react-photo-album .progressive-image:hover {
   filter: brightness(90%);
+  box-shadow: 0 8px 20px rgba(192, 132, 252, 0.9),
+    0 0 30px rgba(159, 62, 255, 0.6);
 }
 
 @keyframes fadeSlideDown {

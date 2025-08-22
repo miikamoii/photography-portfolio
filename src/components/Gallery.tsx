@@ -1,178 +1,147 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import PhotoAlbum from "react-photo-album";
-import Lightbox, { FullscreenRef } from "yet-another-react-lightbox";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import MasonryPhotoAlbum, { type RenderPhotoProps } from "react-photo-album";
+import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import { FiHelpCircle } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
-import "yet-another-react-lightbox/styles.css";
+import type { Slide } from "yet-another-react-lightbox";
 import "react-photo-album/styles.css";
+import "yet-another-react-lightbox/styles.css";
 
-interface ImageItem {
-  src: string;
-  width: number;
-  height: number;
-}
+import type { ImageItem } from "@/lib/getGalleryImages";
 
 interface GalleryProps {
   images: ImageItem[];
 }
 
-function TipPopup({ onClose }: { onClose: () => void }) {
+interface ProgressiveImageProps {
+  photo: ImageItem;
+  width: number;
+  height: number;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+function ProgressiveImage({
+  photo,
+  width,
+  height,
+  onClick,
+}: ProgressiveImageProps) {
+  const [loaded, setLoaded] = useState(false);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="overflow-hidden"
+    <div
+      className="progressive-image"
+      style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: `${width} / ${height}`,
+        cursor: "pointer",
+        borderRadius: "0.25rem",
+        overflow: "hidden",
+      }}
+      onClick={onClick}
     >
-      <div
-        className="
-          relative
-          bg-white dark:bg-gray-800
-          border border-gray-300 dark:border-gray-700
-          rounded-md px-4 py-3 mb-6
-          shadow-lg
-          text-gray-700 dark:text-gray-300
-          select-none
-          w-fit max-w-full
-        "
-        role="dialog"
-        aria-live="polite"
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-            <span className="font-semibold block mb-1">Gallery tips!</span>
-            <span className="block">
-              Click any photo to open it in fullscreen!
-              <br />
-              Doubleclick to zoom.
-              <br />
-              Arrow keys to navigate.
-            </span>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Close tip"
-            className="
-              text-gray-500 hover:text-gray-700 dark:hover:text-gray-300
-              font-bold text-xl leading-none
-              transition-colors
-            "
-          >
-            &times;
-          </button>
-        </div>
-      </div>
-    </motion.div>
+      {/* Blur placeholder */}
+      <Image
+        fill
+        src={photo.blurDataURL || photo.src}
+        alt={photo.alt || ""}
+        style={{
+          objectFit: "cover",
+          transition: "opacity 0.5s ease-out",
+          opacity: loaded ? 0 : 1,
+          position: "absolute",
+        }}
+      />
+
+      {/* Full resolution image */}
+      <Image
+        fill
+        src={photo.src}
+        alt={photo.alt || ""}
+        sizes="(max-width: 680px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        style={{
+          objectFit: "cover",
+          transition: "opacity 0.5s ease-in",
+          opacity: loaded ? 1 : 0,
+        }}
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
   );
 }
 
 export default function Gallery({ images }: GalleryProps) {
   const [index, setIndex] = useState<number | null>(null);
-  const [showTip, setShowTip] = useState(false);
-  const fullscreenRef = useRef<FullscreenRef | null>(null);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-
+  // Handle mobile back button
   useEffect(() => {
-    const tipClosed = localStorage.getItem("galleryTipClosed");
-    if (!tipClosed) setShowTip(true);
-  }, []);
-
-  useEffect(() => {
-    const imgs = document.querySelectorAll(".react-photo-album img");
-    imgs.forEach((img) => {
-      if (!img.getAttribute("loading")) {
-        img.setAttribute("loading", "lazy");
-      }
-    });
-  }, [images]);
-
-  function closeTip() {
-    setShowTip(false);
-    localStorage.setItem("galleryTipClosed", "true");
-  }
-
-  useEffect(() => {
-    if (index !== null && isMobile) {
-      fullscreenRef.current?.enter();
-      window.history.pushState({ lightbox: true }, "");
-    }
-  }, [index, isMobile]);
-
-  useEffect(() => {
-    function handlePopState() {
+    const handlePopState = () => {
       if (index !== null) {
-        setIndex(null);
-        fullscreenRef.current?.exit();
+        setIndex(null); // close lightbox
+        window.history.pushState(null, "", window.location.href);
       }
+    };
+
+    if (index !== null) {
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
     }
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [index]);
+
+  const renderPhoto = (
+    { onClick }: RenderPhotoProps,
+    {
+      photo,
+      width,
+      height,
+    }: { photo: ImageItem; width: number; height: number }
+  ) => (
+    <ProgressiveImage
+      key={photo.src}
+      photo={photo}
+      width={width}
+      height={height}
+      onClick={onClick}
+    />
+  );
+
+  const renderLightboxImage = ({ slide }: { slide: Slide }) => (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <Image
+        fill
+        src={slide.src}
+        alt={slide.alt || ""}
+        style={{ objectFit: "contain", userSelect: "none" }}
+      />
+    </div>
+  );
 
   return (
     <>
-      <div className="mb-4 flex items-center justify-start gap-2">
-        <button
-          onClick={() => {
-            if (showTip) {
-              setShowTip(false);
-              localStorage.setItem("galleryTipClosed", "true");
-            } else {
-              localStorage.removeItem("galleryTipClosed");
-              setShowTip(true);
-            }
-          }}
-          className="p-2 rounded-full bg-gray-50 text-black hover:text-white hover:bg-gray-700 transition dark:bg-gray-800 dark:hover:bg-gray-300 dark:text-white dark:hover:text-gray-900"
-          aria-label="Toggle tip"
-        >
-          <motion.div
-            key={showTip ? "shown" : "hidden"}
-            initial={{ opacity: 0, rotate: 30 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <FiHelpCircle className="h-5 w-5" />
-          </motion.div>
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {showTip && <TipPopup onClose={closeTip} />}
-      </AnimatePresence>
-
-      <PhotoAlbum
+      <MasonryPhotoAlbum
         layout="masonry"
         photos={images}
-        columns={(containerWidth) => {
-          if (containerWidth < 280) return 1;
-          if (containerWidth < 680) return 2;
-          return 3;
-        }}
-        spacing={8}
+        columns={(containerWidth) => (containerWidth < 680 ? 2 : 3)}
+        spacing={16}
         onClick={({ index }) => setIndex(index)}
+        render={{ photo: renderPhoto }}
       />
 
       <Lightbox
         open={index !== null}
         index={index ?? 0}
         close={() => setIndex(null)}
-        slides={images.map(({ src }) => ({ src }))}
+        slides={images}
         plugins={[Fullscreen, Zoom]}
-        fullscreen={{ ref: fullscreenRef, auto: false }}
-        styles={
-          isMobile
-            ? {
-                container: { backgroundColor: "black" },
-                button: { display: "none" },
-              }
-            : {}
-        }
+        render={{ slide: renderLightboxImage }}
       />
     </>
   );
