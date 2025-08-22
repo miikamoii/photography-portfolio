@@ -5,6 +5,7 @@ import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
+import TipButton from "@/components/TipButton";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,8 @@ export default async function GalleryPage() {
           Welcome to my gallery. I&#39;m a developer and photographer passionate
           about creating beautiful, fast, and functional web experiences.
         </p>
+
+        <TipButton />
 
         <Gallery images={images} />
       </section>
