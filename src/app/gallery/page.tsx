@@ -10,7 +10,7 @@ import TipButton from "@/components/TipButton";
 export const dynamic = "force-dynamic";
 
 export default async function GalleryPage() {
-  const images = getGalleryImages();
+  const images = await getGalleryImages();
   const session = await getServerSession(authOptions);
 
   return (
