@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { addGuest, validateGuest } from "@/lib/guestStorage";
+import { addGuest, validateGuest, getGuestByUsername } from "@/lib/guestStorage";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,15 +15,12 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials?.password) return null;
 
         if (credentials.mode === "register") {
-          const removedOldest = await addGuest(
-            credentials.username,
-            credentials.password
-          );
-          return {
-            id: credentials.username,
-            name: credentials.username,
-            removedOldest,
-          };
+          try {
+            await addGuest(credentials.username, credentials.password);
+            return { id: credentials.username, name: credentials.username };
+          } catch {
+            return null;
+          }
         }
 
         if (credentials.mode === "login") {
@@ -31,8 +28,7 @@ export const authOptions: NextAuthOptions = {
             credentials.username,
             credentials.password
           );
-          if (validUser)
-            return { id: validUser.username, name: validUser.username };
+          if (validUser) return { id: validUser.username, name: validUser.username };
         }
 
         return null;
@@ -45,16 +41,27 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.username = user.name ?? undefined;
-        token.removedOldest = user.removedOldest ?? false;
       }
+
+      if (token.username) {
+        const storedUser = getGuestByUsername(token.username);
+        if (!storedUser) {
+          return {};
+        }
+      }
+
       return token;
     },
+
     async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        name: token.username ?? session.user?.name ?? null,
-        removedOldest: token.removedOldest ?? false,
-      };
+      if (!token.username) {
+        session.user = { name: null, email: undefined, image: undefined};
+      } else {
+        session.user = {
+          ...session.user,
+          name: token.username,
+        };
+      }
       return session;
     },
   },
