@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import pfp from "/public/optimized/pfp/pfp.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
@@ -123,11 +124,12 @@ export default function Home() {
                 >
                   <div className="w-24 h-24 rounded-full overflow-hidden border-[1px] border-purple-400 shadow-lg animate-glow">
                     <Image
-                      src="/optimized/pfp/pfp.png"
+                      src={pfp}
                       alt="Miika"
                       width={200}
                       height={200}
-                      quality={100}
+                      quality={90}
+                      priority
                       className="object-cover w-full h-full"
                     />
                   </div>
