@@ -93,7 +93,9 @@ export default function Navbar({ session }: NavbarProps) {
           {isLoggedIn ? (
             <li>
               <button
-                onClick={() => signOut({ callbackUrl: window.location.href })}
+                onClick={() =>
+                  signOut({ callbackUrl: window.location.pathname })
+                }
                 className="text-red-600 dark:text-red-400 font-semibold transition-colors hover:text-red-800 dark:hover:text-red-500 cursor-pointer"
               >
                 Logout

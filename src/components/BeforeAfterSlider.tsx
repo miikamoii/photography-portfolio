@@ -1,13 +1,15 @@
 // components/BeforeAfterSlider.tsx
+
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { Session } from "next-auth";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
 
 interface BeforeAfterSliderProps {
+  id: string;
   beforeSrc: string;
   afterSrc: string;
   session?: Session | null;
@@ -15,6 +17,7 @@ interface BeforeAfterSliderProps {
 }
 
 export default function BeforeAfterSlider({
+  id,
   beforeSrc,
   afterSrc,
   session,
@@ -24,9 +27,7 @@ export default function BeforeAfterSlider({
   const containerRef = useRef<HTMLDivElement>(null);
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
-  const pathname = usePathname();
   const router = useRouter();
-
   const isLoggedIn = !!session?.user?.name;
   const isLocked = locked && !isLoggedIn;
 
@@ -35,8 +36,15 @@ export default function BeforeAfterSlider({
     img.src = beforeSrc;
     img.onload = () => {
       setAspectRatio(img.width / img.height);
+
+      if (window.location.hash === `#${id}`) {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 50);
+      }
     };
-  }, [beforeSrc]);
+  }, [beforeSrc, id]);
 
   const onMove = (clientX: number) => {
     if (!containerRef.current) return;
@@ -57,12 +65,12 @@ export default function BeforeAfterSlider({
   };
 
   function handleLoginClick() {
-    sessionStorage.setItem("lastVisited", pathname);
-    router.push("/login");
+    router.push(`/login#${id}`);
   }
 
   return (
     <div
+      id={id}
       ref={containerRef}
       className="relative w-full max-w-3xl mx-auto my-8"
       style={{
@@ -93,7 +101,6 @@ export default function BeforeAfterSlider({
         className="absolute top-0 left-0 w-full h-full object-contain"
         draggable={false}
       />
-
       <img
         src={beforeSrc}
         alt="Before"

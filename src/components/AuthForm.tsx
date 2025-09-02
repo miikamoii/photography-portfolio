@@ -20,8 +20,14 @@ export default function AuthForm() {
   const [callbackUrl, setCallbackUrl] = useState("/");
 
   useEffect(() => {
-    const lastVisited = sessionStorage.getItem("lastVisited");
-    if (lastVisited) setCallbackUrl(lastVisited);
+    const urlHash = window.location.hash;
+
+    if (urlHash) {
+      setCallbackUrl(`/gallery/${urlHash}`);
+    } else {
+      const lastVisited = sessionStorage.getItem("lastVisited");
+      if (lastVisited) setCallbackUrl(lastVisited);
+    }
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
