@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiMenu, FiX } from "react-icons/fi";
@@ -24,35 +24,24 @@ export default function Navbar({ session }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
 
-  const containerVariants = {
-    open: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: easeInOut,
-        when: "beforeChildren",
-        staggerChildren: 0.07,
-      },
-    },
-    closed: {
-      opacity: 0,
-      y: -20,
-      transition: {
-        duration: 0.2,
-        ease: easeInOut,
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-  };
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
 
-  const linkVariants = {
-    open: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-    closed: { opacity: 0, y: -10, transition: { duration: 0.2 } },
-  };
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY && window.scrollY > 80) {
+        setShowNavbar(false);
+        setIsMenuOpen(false);
+      } else {
+        setShowNavbar(true);
+      }
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   function handleLoginClick() {
     sessionStorage.setItem("lastVisited", pathname);
@@ -62,17 +51,35 @@ export default function Navbar({ session }: NavbarProps) {
   const isLoggedIn = !!session?.user?.name;
 
   return (
-    <header className="relative z-50">
-      <div className="fixed top-2.5 right-4 z-50">
-        <ThemeToggleButton />
-      </div>
+    <header className="fixed top-0 left-0 w-full z-50">
+      <motion.nav
+        initial={{ y: -80 }}
+        animate={{ y: showNavbar ? 0 : -80 }}
+        transition={{ duration: 0.3, ease: easeInOut }}
+        className="w-full py-2 px-6 flex items-center justify-between border-b border-purple-300 dark:border-purple-800 bg-white/70 dark:bg-[#191919]/70 backdrop-blur-md"
+      >
+        <div className="flex items-center">
+          <div className="sm:hidden flex items-center">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
+            {isLoggedIn && (
+              <span className="ml-2 text-gray-600 dark:text-gray-300 text-sm">
+                {session?.user?.name}
+              </span>
+            )}
+          </div>
 
-      <nav className="w-full py-4 px-6 flex items-center justify-between border-b border-purple-300 dark:border-purple-800 relative">
-        {isLoggedIn && (
-          <span className="hidden sm:block absolute left-6 text-gray-600 dark:text-gray-300 text-sm">
-            {session?.user?.name}
-          </span>
-        )}
+          {isLoggedIn && (
+            <span className="hidden sm:block text-gray-600 dark:text-gray-300 text-sm">
+              {session?.user?.name}
+            </span>
+          )}
+        </div>
 
         <ul className="hidden sm:flex gap-6 text-base font-medium mx-auto">
           {navItems.map((item) => (
@@ -113,76 +120,64 @@ export default function Navbar({ session }: NavbarProps) {
           )}
         </ul>
 
-        <div className="flex sm:hidden items-center space-x-2">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            className="text-gray-700 dark:text-gray-300"
-          >
-            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-
-          {isLoggedIn && (
-            <span className="text-gray-600 dark:text-gray-300 text-sm ml-2">
-              {session?.user?.name}
-            </span>
-          )}
+        <div className="flex items-center">
+          <ThemeToggleButton />
         </div>
-      </nav>
+      </motion.nav>
 
       <motion.div
         initial={false}
         animate={isMenuOpen ? "open" : "closed"}
-        variants={containerVariants}
-        className="sm:hidden absolute top-full left-0 w-full bg-white dark:bg-[#191919] border-b border-gray-200 dark:border-gray-800 overflow-hidden"
-        style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
+        variants={{
+          open: { height: "auto", opacity: 1 },
+          closed: { height: 0, opacity: 0 },
+        }}
+        transition={{ duration: 0.3, ease: easeInOut }}
+        className="sm:hidden overflow-hidden bg-white dark:bg-[#191919] border-b border-gray-200 dark:border-gray-800"
       >
-        {navItems.map((item) => (
-          <motion.div
-            key={item.href}
-            variants={linkVariants}
-            className="w-full flex justify-center"
-          >
-            <Link
-              href={item.href}
-              className={`block py-2 text-base font-medium transition-colors hover:text-black dark:hover:text-white ${
-                pathname === item.href
-                  ? "text-black dark:text-white font-semibold"
-                  : "text-gray-500 dark:text-gray-400"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          </motion.div>
-        ))}
+        <ul className="flex flex-col items-center py-2">
+          {navItems.map((item) => (
+            <li key={item.href} className="w-full text-center">
+              <Link
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`block py-2 text-base font-medium transition-colors hover:text-black dark:hover:text-white ${
+                  pathname === item.href
+                    ? "text-black dark:text-white font-semibold"
+                    : "text-gray-500 dark:text-gray-400"
+                }`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
 
-        <motion.div
-          variants={linkVariants}
-          className="w-full flex justify-center"
-        >
           {isLoggedIn ? (
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                signOut({ callbackUrl: window.location.href });
-              }}
-              className="block py-2 text-red-600 dark:text-red-400 font-semibold transition-colors hover:text-red-800 dark:hover:text-red-500 cursor-pointer"
-            >
-              Logout
-            </button>
+            <li className="w-full text-center">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  signOut({ callbackUrl: window.location.pathname });
+                }}
+                className="block w-full py-2 text-red-600 dark:text-red-400 font-semibold transition-colors hover:text-red-800 dark:hover:text-red-500"
+              >
+                Logout
+              </button>
+            </li>
           ) : (
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                handleLoginClick();
-              }}
-              className="block py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-300 cursor-pointer"
-            >
-              Login
-            </button>
+            <li className="w-full text-center">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleLoginClick();
+                }}
+                className="block w-full py-2 text-purple-600 dark:text-purple-400 font-semibold transition-colors hover:text-purple-800 dark:hover:text-purple-500"
+              >
+                Login
+              </button>
+            </li>
           )}
-        </motion.div>
+        </ul>
       </motion.div>
     </header>
   );
