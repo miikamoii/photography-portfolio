@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+testUserStorage.ts
 
 # next.js
 /.next/
@@ -45,6 +46,3 @@ next-env.d.ts
 optimize-images.mjs
 generate-gallery-placeholder.mjs
 /public/images/
-
-# guest storage file
-guest-storage.json
