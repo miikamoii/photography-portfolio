@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import NavbarWrapper from "@/components/NavbarWrapper";
 import Footer from "@/components/Footer";
 import ThemeProvider from "@/theme/ThemeProvider";
 import { getServerSession } from "next-auth/next";
@@ -45,7 +45,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-[#191919] text-[#37352f] dark:text-[#ffffffcf]`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar session={session} />
+          <NavbarWrapper session={session} />
           <main className="px-4 sm:px-8 max-w-5xl mx-auto">{children}</main>
           <Footer />
         </ThemeProvider>
