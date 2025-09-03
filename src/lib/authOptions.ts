@@ -1,6 +1,12 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { addGuest, validateGuest, getGuestByUsername } from "@/lib/guestStorage";
+import { addUser, validateUser } from "@/lib/userStorage";
+import type { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+
+interface MyJWT extends JWT {
+  username?: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,54 +22,48 @@ export const authOptions: NextAuthOptions = {
 
         if (credentials.mode === "register") {
           try {
-            await addGuest(credentials.username, credentials.password);
-            return { id: credentials.username, name: credentials.username };
+            await addUser(credentials.username, credentials.password);
+            return { id: credentials.username, username: credentials.username };
           } catch {
             return null;
           }
         }
 
         if (credentials.mode === "login") {
-          const validUser = await validateGuest(
+          const validUser = await validateUser(
             credentials.username,
             credentials.password
           );
-          if (validUser) return { id: validUser.username, name: validUser.username };
+          if (validUser) {
+            return { id: validUser.username, username: validUser.username };
+          }
         }
 
         return null;
       },
     }),
   ],
+
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
+
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.username = user.name ?? undefined;
-      }
-
-      if (token.username) {
-        const storedUser = getGuestByUsername(token.username);
-        if (!storedUser) {
-          return {};
-        }
-      }
-
+    async jwt({ token, user }: { token: MyJWT; user?: { username?: string } }) {
+      if (user?.username) token.username = user.username;
       return token;
     },
 
-    async session({ session, token }) {
-      if (!token.username) {
-        session.user = { name: null, email: undefined, image: undefined};
-      } else {
-        session.user = {
+    async session({ session, token }: { session: Session; token: MyJWT }) {
+      return {
+        ...session,
+        user: {
           ...session.user,
-          name: token.username,
-        };
-      }
-      return session;
+          name: token.username ?? null,
+          username: token.username ?? null,
+        },
+      };
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 };

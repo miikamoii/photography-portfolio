@@ -6,12 +6,7 @@ import Link from "next/link";
 import { FiMenu, FiX } from "react-icons/fi";
 import ThemeToggleButton from "../theme/ThemeToggleButton";
 import { motion, easeInOut } from "framer-motion";
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
-
-interface NavbarProps {
-  session: Session | null;
-}
+import { useSession, signOut } from "next-auth/react";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -20,7 +15,8 @@ const navItems = [
   { label: "About", href: "/about" },
 ];
 
-export default function Navbar({ session }: NavbarProps) {
+export default function Navbar() {
+  const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
