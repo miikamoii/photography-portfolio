@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@upstash/redis": "^1.35.3",
     "@vercel/analytics": "^1.5.0",
     "autoprefixer": "^10.4.21",
     "bcrypt": "^6.0.0",
@@ -31,11 +32,13 @@
     "@types/node": "^20",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.4.4",
     "plaiceholder": "^3.0.0",
     "sharp": "^0.34.3",
     "tailwindcss": "^4.1.11",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }
