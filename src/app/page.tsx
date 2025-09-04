@@ -4,6 +4,7 @@ import Image from "next/image";
 import pfp from "/public/optimized/pfp/pfp.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import Link from "next/link";
 
 export default function Home() {
   const [hovered, setHovered] = useState(false);
@@ -73,70 +74,70 @@ export default function Home() {
             👋
           </motion.span>
           Hi, I&#39;m{" "}
-          <motion.span
-            className="text-purple-400 relative cursor-default inline-block"
-            onMouseEnter={() => {
-              setHovered(true);
-              if (annotationFullyAppeared) setAnnotationVisible(false);
-            }}
-            onMouseLeave={() => setHovered(false)}
-            initial={{ y: -150, opacity: 0 }}
-            animate={pageLoaded ? { y: 0, opacity: 1 } : {}}
-            transition={{
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-              mass: 1.2,
-              delay: 0.5,
-            }}
-          >
-            Miika
-            <AnimatePresence>
-              {showAnnotation && annotationVisible && (
-                <motion.div
-                  initial={{ opacity: 0, x: -10, y: 10 }}
-                  animate={{ opacity: 1, x: 0, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ delay: 3, duration: 1, ease: "easeOut" }}
-                  onAnimationComplete={() => setAnnotationFullyAppeared(true)}
-                  className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center gap-1 select-none pointer-events-none"
-                  aria-hidden="true"
-                >
-                  <span
-                    className="text-sm text-purple-300"
-                    style={{
-                      transform: "rotate(35deg)",
-                    }}
+          <Link href="/me" passHref>
+            <motion.span
+              className="text-purple-400 hover:text-purple-300 relative cursor-pointer inline-block transition-colors"
+              onMouseEnter={() => {
+                setHovered(true);
+                if (annotationFullyAppeared) setAnnotationVisible(false);
+              }}
+              onMouseLeave={() => setHovered(false)}
+              initial={{ y: -150, opacity: 0 }}
+              animate={pageLoaded ? { y: 0, opacity: 1 } : {}}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+                mass: 1.2,
+                delay: 0.5,
+              }}
+            >
+              Miika
+              <AnimatePresence>
+                {showAnnotation && annotationVisible && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -10, y: 10 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ delay: 3, duration: 1, ease: "easeOut" }}
+                    onAnimationComplete={() => setAnnotationFullyAppeared(true)}
+                    className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex items-center gap-1 select-none pointer-events-none"
+                    aria-hidden="true"
                   >
-                    Hover over me!
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              {hovered && (
-                <motion.div
-                  initial={{ opacity: 0, y: -100, scale: 0.9 }}
-                  animate={{ opacity: 1, y: -210, scale: 1.8 }}
-                  exit={{ opacity: 0, y: -100, scale: 0.9 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute left-1/2 -translate-x-1/2 mb-2"
-                >
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-[1px] border-purple-400 shadow-lg animate-glow">
-                    <Image
-                      src={pfp}
-                      alt="Miika"
-                      width={200}
-                      height={200}
-                      quality={90}
-                      priority
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.span>
+                    <span
+                      className="text-sm text-purple-300"
+                      style={{ transform: "rotate(35deg)" }}
+                    >
+                      Hover over me!
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {hovered && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -100, scale: 0.9 }}
+                    animate={{ opacity: 1, y: -210, scale: 1.8 }}
+                    exit={{ opacity: 0, y: -100, scale: 0.9 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="absolute left-1/2 -translate-x-1/2 mb-2"
+                  >
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-[1px] border-purple-400 shadow-lg animate-glow">
+                      <Image
+                        src={pfp}
+                        alt="Miika"
+                        width={200}
+                        height={200}
+                        quality={90}
+                        priority
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.span>
+          </Link>
         </h1>
 
         <p className="mt-4 text-lg sm:text-xl text-zinc-200 max-w-xl">

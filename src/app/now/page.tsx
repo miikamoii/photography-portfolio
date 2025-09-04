@@ -8,27 +8,27 @@ export const metadata = {
 
 export default function NowPage() {
   return (
-    <section className="max-w-2xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
-        What I&#39;m Doing Now
-      </h1>
+    <main className="min-h-screen px-6 py-12 max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">What I&#39;m Doing Now</h1>
 
-      <p className="text-gray-700 dark:text-gray-300 mb-6">
-        This page is inspired by{" "}
-        <a
-          href="https://nownownow.com/about"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-black dark:hover:text-white"
-        >
-          nownownow.com
-        </a>
-        — a public declaration of what I&#39;m focused on at this moment.
-      </p>
+      <section className="mb-8">
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          This page is inspired by{" "}
+          <a
+            href="https://nownownow.com/about"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-black dark:hover:text-white"
+          >
+            nownownow.com
+          </a>
+          — a public declaration of what I&#39;m focused on at this moment.
+        </p>
+      </section>
 
-      <div className="space-y-6 leading-relaxed">
+      <section className="space-y-6 leading-relaxed mb-10">
         <div>
-          <h2 className="text-xl font-semibold mb-1">👨‍💻 Coding Focus</h2>
+          <h2 className="text-2xl font-semibold mb-2">👨‍💻 Coding Focus</h2>
           <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>
               Building out portfolio features (auth, tagging, lightbox, etc.)
@@ -39,7 +39,7 @@ export default function NowPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-1">📚 Currently Learning</h2>
+          <h2 className="text-2xl font-semibold mb-2">📚 Currently Learning</h2>
           <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Next.js 14 full-stack features</li>
             <li>Design patterns & testing best practices</li>
@@ -48,7 +48,7 @@ export default function NowPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-1">📸 Photography</h2>
+          <h2 className="text-2xl font-semibold mb-2">📸 Photography</h2>
           <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Going through the pictures of my last trip to Japan</li>
             <li>Exploring auto-tagging + AI sorting tools</li>
@@ -56,16 +56,16 @@ export default function NowPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-1">💪 Personal Goals</h2>
-          <ul className=" text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
+          <h2 className="text-2xl font-semibold mb-2">💪 Personal Goals</h2>
+          <ul className="text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
             <li>Polishing this portfolio for developer job applications</li>
             <li>Staying consistent with daily focused learning</li>
             <li>Finding inspiration through building, not just consuming</li>
           </ul>
         </div>
-      </div>
+      </section>
 
-      <p className="text-sm mt-10 text-gray-500">Last updated: August 2025</p>
-    </section>
+      <p className="text-gray-500 text-sm">Last updated: August 2025</p>
+    </main>
   );
 }
