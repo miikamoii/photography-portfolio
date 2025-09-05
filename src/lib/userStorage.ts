@@ -10,7 +10,7 @@ type StoredUser = {
   createdAt: number;
 };
 
-const redis = new Redis({
+export const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
   token: process.env.KV_REST_API_TOKEN!,
 });
@@ -67,9 +67,9 @@ export async function addUser(username: string, password: string) {
   });
 }
 
-export async function validateUser(username: string, password: string) {
+export async function getUserOrExpire(username: string) {
   const data = await redis.get(redisKey(username));
-  if (!data) return false;
+  if (!data) return null;
 
   let user: StoredUser;
   try {
@@ -78,26 +78,20 @@ export async function validateUser(username: string, password: string) {
         ? (JSON.parse(data) as StoredUser)
         : (data as StoredUser);
   } catch {
-    return false;
+    return null;
   }
+
+  await redis.expire(redisKey(username), EXPIRATION_MS / 1000);
+
+  return user;
+}
+
+export async function validateUser(username: string, password: string) {
+  const user = await getUserOrExpire(username);
+  if (!user) return false;
 
   const match = await bcrypt.compare(password.trim(), user.passwordHash);
   if (!match) return false;
 
-  await redis.expire(redisKey(username), EXPIRATION_MS / 1000);
-
   return { username: user.username };
-}
-
-export async function getUser(username: string) {
-  const data = await redis.get(redisKey(username));
-  if (!data) return null;
-
-  try {
-    return typeof data === "string"
-      ? (JSON.parse(data) as StoredUser)
-      : (data as StoredUser);
-  } catch {
-    return null;
-  }
 }
