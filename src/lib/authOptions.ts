@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { addUser, validateUser } from "@/lib/userStorage";
+import { addUser, validateUser, getUserOrExpire } from "@/lib/userStorage";
 import type { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 
@@ -34,9 +34,8 @@ export const authOptions: NextAuthOptions = {
             credentials.username,
             credentials.password
           );
-          if (validUser) {
+          if (validUser)
             return { id: validUser.username, username: validUser.username };
-          }
         }
 
         return null;
@@ -54,12 +53,27 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }: { session: Session; token: MyJWT }) {
+      if (!token.username) return session;
+
+      const existingUser = await getUserOrExpire(token.username);
+      if (!existingUser) {
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            username: null,
+            name: null,
+            expired: true,
+          },
+        };
+      }
+
       return {
         ...session,
         user: {
           ...session.user,
-          name: token.username ?? null,
-          username: token.username ?? null,
+          name: existingUser.username,
+          username: existingUser.username,
         },
       };
     },
