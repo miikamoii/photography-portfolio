@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import pfp from "/public/optimized/pfp/pfp.png";
+import pfpData from "../../public/optimized/pfp/pfp-data.json";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import Link from "next/link";
@@ -130,7 +131,10 @@ export default function Home() {
                         height={200}
                         quality={90}
                         priority
-                        className="object-cover w-full h-full"
+                        className="object-cover w-full h-full transition-opacity duration-500"
+                        placeholder="blur"
+                        blurDataURL={pfpData.blurDataURL}
+                        style={{ transition: "opacity 0.5s" }}
                       />
                     </div>
                   </motion.div>
