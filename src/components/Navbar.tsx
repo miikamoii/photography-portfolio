@@ -53,7 +53,10 @@ export default function Navbar() {
         initial={{ y: -80 }}
         animate={{ y: showNavbar ? 0 : -80 }}
         transition={{ duration: 0.3, ease: easeInOut }}
-        className="w-full py-2 px-6 flex items-center justify-between border-b border-purple-300 dark:border-purple-800 bg-white/70 dark:bg-[#191919]/70 backdrop-blur-md"
+        className="w-full py-2 px-6 flex items-center justify-between 
+  border-b border-purple-300 dark:border-purple-800 
+  bg-white/70 dark:bg-[#191919]/70 backdrop-blur-md 
+  shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:shadow-[0_4px_12px_rgba(107,33,168,0.4)]"
       >
         <div className="flex items-center">
           <div className="sm:hidden flex items-center">

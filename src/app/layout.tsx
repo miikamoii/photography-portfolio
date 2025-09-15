@@ -46,7 +46,7 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <NavbarWrapper session={session} />
-          <main className="px-4 sm:px-8 max-w-5xl mx-auto">{children}</main>
+          <main>{children}</main>
           <Footer />
         </ThemeProvider>
         <Analytics />

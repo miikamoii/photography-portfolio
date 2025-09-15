@@ -4,7 +4,11 @@ import { MdEmail } from "react-icons/md";
 
 export default function Footer() {
   return (
-    <footer className="w-full py-6 px-8 mt-12 border-t border-purple-300 dark:border-purple-800 text-center text-sm text-gray-600 dark:text-gray-400">
+    <footer
+      className="w-full py-6 px-8 mt-12 border-t border-purple-300 dark:border-purple-800 
+             text-center text-sm text-gray-600 dark:text-gray-400 
+             shadow-[0_-4px_12px_rgba(168,85,247,0.3)] dark:shadow-[0_-4px_12px_rgba(107,33,168,0.4)]"
+    >
       <div className="flex justify-center space-x-4 mb-2 text-xl">
         <a
           href="https://github.com/miikamoii"

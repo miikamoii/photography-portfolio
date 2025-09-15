@@ -14,7 +14,7 @@ export default async function GalleryPage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <main className="min-h-screen px-6 py-12 space-y-20 relative">
+    <main className="min-h-screen px-6 py-12 max-w-5xl mx-auto">
       <section>
         <h1 className="text-4xl font-extrabold mb-4 text-center dark:text-white">
           My Gallery

@@ -54,9 +54,9 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden text-white">
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-y-0 left-8 right-8 z-0">
         <Image
-          src="/optimized/hero/IMG_1217.webp"
+          src="/optimized/gallery/P6240561.JPG.webp"
           alt="Hero background"
           fill
           priority
