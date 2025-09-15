@@ -54,7 +54,7 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden text-white">
-      <div className="absolute inset-y-0 left-8 right-8 z-0">
+      <div className="absolute inset-y-0 left-2 right-2 sm:left-6 sm:right-6 md:left-12 md:right-12 z-0">
         <Image
           src="/optimized/gallery/P6240561.JPG.webp"
           alt="Hero background"
