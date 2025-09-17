@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📸 photoCode_Portfolio
 
-## Getting Started
+Welcome! This is both a gallery of my photography and a personal sandbox for modern web development. Here, I experiment with new technologies, design patterns, and best practices while building everything with intention and a focus on both form and function.
 
-First, run the development server:
+---
+
+## ✨ Purpose
+
+- **Showcase my photography** in a fast, interactive gallery.
+- **Sharpen my development skills** by building custom components and exploring the latest in web tech.
+
+---
+
+## 🔧 Tech Stack
+
+- **Next.js App Router** – full-stack React framework
+- **TypeScript** – type safety & maintainability
+- **Tailwind CSS** – rapid, responsive styling
+- **Framer Motion** – smooth animations & transitions
+- **NextAuth** – secure guest authentication
+- **Upstash Redis** – lightweight user storage
+
+---
+
+## 🚀 Features
+
+- Temporary guest login for private tool access
+- Custom before/after image slider
+- Responsive, progressive image gallery with lightbox
+- Dark/light mode toggle
+- Subtle, custom animations for a polished UX
+
+---
+
+## 🛠️ Getting Started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a .env.local file in the project root and add:
 
-## Learn More
+```typescript
+NEXTAUTH_SECRET = "your_secret";
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📂 Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+src/
+ ├── app/                 # Next.js App Router
+ │   ├── about/           # About page
+ │   ├── api/             # NextAuth + guest login APIs
+ │   ├── gallery/         # Photography galleries
+ │   ├── login/           # Login page
+ │   ├── me/              # User profile page
+ │   ├── now/             # Now page
+ │   └── ...              # Root layout, global styles, etc.
+ ├── components/          # Reusable UI components
+ ├── lib/                 # Utility libraries (auth, storage, gallery)
+ ├── theme/               # Theme provider and toggle
+ └── types/               # TypeScript type definitions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+public/
+ ├── icons/               # SVG icons
+ ├── images/              # Original images (gallery, compare, hero, pfp)
+ └── optimized/           # Optimized images (webp, blur, data)
+```
 
-## Deploy on Vercel
+## 🌍 Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This site is designed to be deployed on Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📖 About
+
+The site isn’t just a portfolio, it’s also a place to explore UI patterns, animations, and full-stack features with Next.js.
